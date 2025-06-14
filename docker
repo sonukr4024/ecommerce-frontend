@@ -1,0 +1,18 @@
+# Step 1: Build React app
+FROM node:18 AS build
+
+WORKDIR /app
+COPY . .
+RUN npm install
+RUN npm run build
+
+# Step 2: Serve with nginx
+FROM nginx:stable-alpine
+
+# React build se nginx html folder me copy karo
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Expose port 3000
+EXPOSE 3000
+
+CMD ["nginx", "-g", "daemon off;"]
